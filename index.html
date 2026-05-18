@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kisaan Connect - Complete Web App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* HEADER/NAV */
+        header {
+            background: linear-gradient(135deg, #16a34a 0%, #059669 100%);
+            color: white;
+            padding: 1rem 2%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        nav {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        nav button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .logout-btn {
+            background: #dc2626;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+
+        .logout-btn:hover {
+            background: #991b1b;
+        }
+
+        /* PAGES */
+        .page {
+            display: none;
+            padding: 2rem;
+            animation: fadeIn 0.3s;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* LOGIN PAGE */
+        .login-container {
+            display: flex;
+            height: 100vh;
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+        }
+
+        .login-left {
+            width: 50%;
+            background: linear-gradient(135deg, #16a34a 0%, #059669 100%);
+            color: white;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            display: none;
+        }
+
+        .login-left.show {
+            display: flex;
+        }
+
+        .login-left h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .login-left p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .login-left ul {
+            list-style: none;
+            space: 1rem;
+        }
+
+        .login-left li {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .login-right {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .login-form-container {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .form-tab-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #9ca3af;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            margin-bottom: -2px;
+        }
+
+        .form-tab-btn.active {
+            color: #16a34a;
+            border-bottom-color: #16a34a;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #16a34a;
+            box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+        }
+
+        .form-submit {
+            width: 100%;
+            padding: 0.75rem;
+            background: #16a34a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 1rem;
+        }
+
+        .form-submit:hover {
+            background: #15803d;
+        }
+
+        .demo-account {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        /* DASHBOARD */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #16a34a;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.875rem;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .welcome-card {
+            background: linear-gradient(135deg, #16a34a 0%, #059669 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .welcome-card h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* PRICE SECTION */
+        .prices-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .prices-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .price-card {
+            border: 1px solid #e5e7eb;
+            padding: 1rem;
+            border-radius: 6px;
+            transition: box-shadow 0.3s;
+        }
+
+        .price-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .price-card h4 {
+            font-weight: bold;
+            margin-bottom: 0.75rem;
+            font-size: 1.125rem;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .price-row:last-child {
+            border-bottom: none;
+        }
+
+        .price-label {
+            color: #6b7280;
+        }
+
+        .price-value {
+            font-weight: 600;
+            color: #16a34a;
+        }
+
+        /* MARKETPLACE */
+        .marketplace-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            background: #16a34a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #15803d;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .listing-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            transition: box-shadow 0.3s;
+        }
+
+        .listing-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .listing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .listing-item {
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 4px;
+        }
+
+        .listing-item label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            display: block;
+        }
+
+        .listing-item strong {
+            font-size: 1.125rem;
+            color: #1f2937;
+        }
+
+        .form-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-card h2 {
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+        }
+
+        .info-box {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: #1e40af;
+        }
+
+        .success-box {
+            background: #dcfce7;
+            border-left: 4px solid #22c55e;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: #166534;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #16a34a;
+        }
+
+        .range-container {
+            margin: 1rem 0;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #d1d5db;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #16a34a;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #16a34a;
+            cursor: pointer;
+            border: none;
+        }
+
+        .damage-display {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #dc2626;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .estimated-amount {
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 4px;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .estimated-amount p {
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+        }
+
+        .estimated-amount strong {
+            font-size: 1.75rem;
+            color: #16a34a;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .form-buttons button {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .form-buttons .btn {
+            background: #16a34a;
+            color: white;
+        }
+
+        .form-buttons .btn:hover {
+            background: #15803d;
+        }
+
+        .form-buttons .btn-cancel {
+            background: #e5e7eb;
+            color: #1f2937;
+        }
+
+        .form-buttons .btn-cancel:hover {
+            background: #d1d5db;
+        }
+
+        /* NOTIFICATION */
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 4px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.3s;
+            z-index: 1000;
+        }
+
+        .notification.success {
+            background: #22c55e;
+        }
+
+        .notification.error {
+            background: #ef4444;
+        }
+
+        .notification.info {
+            background: #3b82f6;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .feature-list li {
+            padding: 0.5rem 0;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        h2 {
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+            font-size: 1.875rem;
+        }
+
+        h3 {
+            color: #1f2937;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        table th,
+        table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        table th {
+            background: #f3f4f6;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        table tr:hover {
+            background: #f9fafb;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-approved {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .fpo-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #16a34a;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .fpo-card h3 {
+            margin-bottom: 1rem;
+            color: #16a34a;
+        }
+
+        .fpo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .fpo-item {
+            background: #f9fafb;
+            padding: 0.75rem;
+            border-radius: 4px;
+        }
+
+        .fpo-item label {
+            display: block;
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+        }
+
+        .fpo-item strong {
+            display: block;
+            color: #1f2937;
+            font-size: 1.125rem;
+        }
+
+        .benefits-list {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            padding: 1.5rem;
+            border-radius: 6px;
+            margin-top: 1.5rem;
+        }
+
+        .benefits-list h4 {
+            color: #166534;
+            margin-bottom: 1rem;
+        }
+
+        .benefits-list ul {
+            list-style: none;
+        }
+
+        .benefits-list li {
+            color: #15803d;
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .benefits-list li:before {
+            content: "✓";
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .login-left {
+                display: none !important;
+            }
+
+            .login-right {
+                width: 100%;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .prices-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-buttons {
+                flex-direction: column;
+            }
+
+            nav {
+                gap: 0.5rem;
+                flex-wrap: wrap;
+            }
+
+            nav button {
+                padding: 0.5rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header id="header" style="display: none;">
+        <div class="logo">🌾 Kisaan Connect</div>
+        <nav>
+            <button onclick="showPage('dashboard')">डैशबोर्ड</button>
+            <button onclick="showPage('marketplace')">बाज़ार</button>
+            <button onclick="showPage('fpo')">FPO</button>
+            <button onclick="showPage('insurance')">बीमा</button>
+            <button onclick="showPage('kcc')">KCC</button>
+            <button class="logout-btn" onclick="logout()">लॉगआउट</button>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- LOGIN PAGE -->
+        <div id="login-page" class="page active">
+            <div class="login-container">
+                <div class="login-left show">
+                    <div>
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">🌾</div>
+                        <h1>Kisaan Connect</h1>
+                        <p>भारत का पहला AI-संचालित किसान संरक्षण मंच</p>
+                        <ul class="feature-list">
+                            <li>सीधे खरीदार तक - बिना बिचौलिए</li>
+                            <li>AI द्वारा मूल्य भविष्यवाणी</li>
+                            <li>तत्काल KCC ऋण स्वीकृति</li>
+                            <li>पारदर्शी फसल बीमा</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="login-right">
+                    <div class="login-form-container">
+                        <div class="form-tabs">
+                            <button class="form-tab-btn active" onclick="switchLoginTab('signin')">साइन इन करें</button>
+                            <button class="form-tab-btn" onclick="switchLoginTab('signup')">पंजीकृत करें</button>
+                        </div>
+
+                        <!-- SIGNIN FORM -->
+                        <form id="signin-form" onsubmit="handleSignIn(event)">
+                            <div class="form-group">
+                                <label>ईमेल</label>
+                                <input type="email" id="signin-email" required>
+                            </div>
+                            <div class="form-group">
+                                <label>पासवर्ड</label>
+                                <input type="password" id="signin-password" required>
+                            </div>
+                            <button type="submit" class="form-submit">साइन इन करें</button>
+                            <div class="demo-account">
+                                <strong>डेमो खाता:</strong><br>
+                                Email: rajesh@example.com<br>
+                                Password: pass123
+                            </div>
+                        </form>
+
+                        <!-- SIGNUP FORM -->
+                        <form id="signup-form" style="display: none;" onsubmit="handleSignUp(event)">
+                            <div class="form-group">
+                                <label>नाम</label>
+                                <input type="text" id="signup-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>ईमेल</label>
+                                <input type="email" id="signup-email" required>
+                            </div>
+                            <div class="form-group">
+                                <label>पासवर्ड</label>
+                                <input type="password" id="signup-password" required>
+                            </div>
+                            <div class="form-group">
+                                <label>गांव का नाम</label>
+                                <input type="text" id="signup-village" required>
+                            </div>
+                            <div class="form-group">
+                                <label>जमीन (एकड़)</label>
+                                <input type="number" id="signup-landsize" step="0.1" required>
+                            </div>
+                            <button type="submit" class="form-submit">खाता बनाएं</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD PAGE -->
+        <div id="dashboard-page" class="page">
+            <div class="welcome-card">
+                <h2>नमस्ते, <span id="user-name"></span>! 🌾</h2>
+                <p id="user-village" style="opacity: 0.9;"></p>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="stat-label">खाता शेष</div>
+                    <div class="stat-value">₹<span id="balance">0</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">जमीन का आकार</div>
+                    <div class="stat-value"><span id="landsize">0</span> एकड़</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">सक्रिय सूचियां</div>
+                    <div class="stat-value"><span id="active-listings">0</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">समूह सदस्य</div>
+                    <div class="stat-value"><span id="group-members">1</span></div>
+                </div>
+            </div>
+
+            <div class="prices-section">
+                <h3>📈 फसल के वर्तमान मूल्य</h3>
+                <div class="prices-grid" id="prices-grid"></div>
+            </div>
+        </div>
+
+        <!-- MARKETPLACE PAGE -->
+        <div id="marketplace-page" class="page">
+            <div class="marketplace-header">
+                <h2>बाज़ार</h2>
+                <button class="btn" onclick="showPage('add-listing')">+ अपनी फसल जोड़ें</button>
+            </div>
+            <div id="marketplace-listings"></div>
+        </div>
+
+        <!-- ADD LISTING PAGE -->
+        <div id="add-listing-page" class="page">
+            <div class="form-card">
+                <h2>अपनी फसल सूचीबद्ध करें</h2>
+                <form onsubmit="handleAddListing(event)">
+                    <div class="form-group">
+                        <label>फसल का चयन करें</label>
+                        <select id="listing-crop" required>
+                            <option value="">चुनें...</option>
+                            <option>Mungfali</option>
+                            <option>Gaheun</option>
+                            <option>Pyaz</option>
+                            <option>Tamatar</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>मात्रा (किग्रा में)</label>
+                        <input type="number" id="listing-quantity" placeholder="जैसे 500" required>
+                    </div>
+                    <div class="form-group">
+                        <label>मूल्य (प्रति किग्रा)</label>
+                        <input type="number" id="listing-price" placeholder="जैसे 5000" required>
+                    </div>
+                    <div class="form-group">
+                        <label>विवरण</label>
+                        <textarea id="listing-description" placeholder="अपनी फसल के बारे में बताएं..." rows="3"></textarea>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn">सूचीबद्ध करें</button>
+                        <button type="button" class="btn btn-cancel" onclick="showPage('marketplace')">रद्द करें</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- INSURANCE PAGE -->
+        <div id="insurance-page" class="page">
+            <div class="marketplace-header">
+                <h2>फसल बीमा</h2>
+                <button class="btn" onclick="showPage('file-claim')">+ दावा दाखिल करें</button>
+            </div>
+            <div id="insurance-claims"></div>
+        </div>
+
+        <!-- FILE CLAIM PAGE -->
+        <div id="file-claim-page" class="page">
+            <div class="form-card">
+                <h2>फसल नुकसान का दावा दाखिल करें</h2>
+                <div class="info-box">
+                    ℹ️ ISRO उपग्रह डेटा का उपयोग करके स्वचालित रूप से सत्यापित किया जाता है। कोई डॉक्टर नहीं!
+                </div>
+                <form onsubmit="handleFileClaim(event)">
+                    <div class="form-group">
+                        <label>क्षतिग्रस्त फसल</label>
+                        <select id="claim-crop" required>
+                            <option value="">चुनें...</option>
+                            <option>Mungfali</option>
+                            <option>Gaheun</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>क्षति प्रतिशत (%)</label>
+                        <div class="range-container">
+                            <input type="range" id="damage-range" min="0" max="100" value="0" onchange="updateDamageDisplay()">
+                            <div class="damage-display"><span id="damage-percent">0</span>%</div>
+                        </div>
+                    </div>
+                    <div class="estimated-amount">
+                        <p>अनुमानित दावा राशि:</p>
+                        <strong>₹<span id="estimated-claim">0</span></strong>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn">दावा जमा करें</button>
+                        <button type="button" class="btn btn-cancel" onclick="showPage('insurance')">रद्द करें</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- KCC PAGE -->
+        <div id="kcc-page" class="page">
+            <div class="marketplace-header">
+                <h2>किसान क्रेडिट कार्ड (KCC)</h2>
+                <button class="btn" onclick="showPage('apply-kcc')">+ नया आवेदन</button>
+            </div>
+            <div id="kcc-loans"></div>
+        </div>
+
+        <!-- APPLY KCC PAGE -->
+        <div id="apply-kcc-page" class="page">
+            <div class="form-card">
+                <h2>किसान क्रेडिट कार्ड के लिए आवेदन करें</h2>
+                <div class="success-box">
+                    ✓ तेजी से अनुमोदन! आमतौर पर 24 घंटे में स्वीकृत।
+                </div>
+                <form onsubmit="handleApplyKCC(event)">
+                    <div class="form-group">
+                        <label>ऋण राशि (₹)</label>
+                        <input type="number" id="kcc-amount" placeholder="जैसे 100000" required>
+                    </div>
+                    <div class="form-group">
+                        <label>उद्देश्य</label>
+                        <select id="kcc-purpose" required>
+                            <option value="">चुनें...</option>
+                            <option>बीज और खाद</option>
+                            <option>ट्रैक्टर किराया</option>
+                            <option>सिंचाई उपकरण</option>
+                            <option>अन्य कृषि खर्च</option>
+                        </select>
+                    </div>
+                    <div class="success-box">
+                        <strong>विशेषताएँ:</strong><br>
+                        ✓ 4% ब्याज दर (सरकार द्वारा सब्सिडी)<br>
+                        ✓ 12 महीने की अवधि<br>
+                        ✓ कोई छिपी फीस नहीं<br>
+                        ✓ तत्काल स्वीकृति
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn">आवेदन जमा करें</button>
+                        <button type="button" class="btn btn-cancel" onclick="showPage('kcc')">रद्द करें</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- FPO PAGE -->
+        <div id="fpo-page" class="page">
+            <h2>👥 किसान उत्पादक संगठन (FPO)</h2>
+            <div id="fpo-content"></div>
+        </div>
+    </div>
+
+    <script>
+        // DATA
+        let currentUser = null;
+        let farmers = {
+            'F001': {
+                id: 'F001',
+                name: 'Rajesh Kumar',
+                email: 'rajesh@example.com',
+                password: 'pass123',
+                village: 'Udaipur Village',
+                landSize: 5,
+                crops: ['Mungfali', 'Gaheun'],
+                balance: 45000,
+                phone: '+91-9876543210'
+            }
+        };
+
+        let marketplace = [
+            {
+                id: 'MKT001',
+                farmerName: 'Rajesh Kumar',
+                crop: 'Mungfali',
+                quantity: 100,
+                askingPrice: 5000,
+                unit: 'kg',
+                description: 'Premium quality groundnuts, pesticide-free'
+            }
+        ];
+
+        let prices = {
+            'Mungfali': { current: 5000, predicted7: 5200, predicted30: 5500 },
+            'Gaheun': { current: 2100, predicted7: 2050, predicted30: 2200 },
+            'Pyaz': { current: 3200, predicted7: 3500, predicted30: 3800 }
+        };
+
+        let insuranceClaims = [
+            {
+                id: 'INS001',
+                farmerId: 'F001',
+                crop: 'Mungfali',
+                damagePercentage: 40,
+                claimAmount: 8000,
+                status: 'approved'
+            }
+        ];
+
+        let loanApplications = [
+            {
+                id: 'LOAN001',
+                farmerId: 'F001',
+                amount: 100000,
+                purpose: 'Tractor rental',
+                status: 'approved',
+                interestRate: 4,
+                tenure: 12
+            }
+        ];
+
+        let fpos = [
+            {
+                id: 'FPO001',
+                name: 'Udaipur Farmers Group',
+                village: 'Udaipur Village',
+                members: ['F001'],
+                totalProduction: 500,
+                crop: 'Mungfali'
+            }
+        ];
+
+        // FUNCTIONS
+        function showNotification(message, type = 'info') {
+            const notif = document.createElement('div');
+            notif.className = `notification ${type}`;
+            notif.textContent = message;
+            document.body.appendChild(notif);
+            setTimeout(() => notif.remove(), 4000);
+        }
+
+        function switchLoginTab(tab) {
+            document.querySelectorAll('.form-tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('form').forEach(form => form.style.display = 'none');
+            
+            if (tab === 'signin') {
+                document.querySelectorAll('.form-tab-btn')[0].classList.add('active');
+                document.getElementById('signin-form').style.display = 'block';
+            } else {
+                document.querySelectorAll('.form-tab-btn')[1].classList.add('active');
+                document.getElementById('signup-form').style.display = 'block';
+            }
+        }
+
+        function handleSignIn(event) {
+            event.preventDefault();
+            const email = document.getElementById('signin-email').value;
+            const password = document.getElementById('signin-password').value;
+
+            const user = Object.values(farmers).find(f => f.email === email && f.password === password);
+            if (user) {
+                currentUser = user;
+                showNotification(`स्वागत है ${user.name}! 🌾`, 'success');
+                showPage('dashboard');
+                updateDashboard();
+            } else {
+                showNotification('Invalid email or password', 'error');
+            }
+        }
+
+        function handleSignUp(event) {
+            event.preventDefault();
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const village = document.getElementById('signup-village').value;
+            const landSize = parseFloat(document.getElementById('signup-landsize').value);
+
+            if (!name || !email || !password || !village) {
+                showNotification('सभी फील्ड भरें', 'error');
+                return;
+            }
+
+            const newId = 'F' + String(Object.keys(farmers).length + 1).padStart(3, '0');
+            const newFarmer = {
+                id: newId,
+                name,
+                email,
+                password,
+                village,
+                landSize,
+                crops: ['Mungfali', 'Gaheun'],
+                balance: 0,
+                phone: '+91-9000000000'
+            };
+
+            farmers[newId] = newFarmer;
+            currentUser = newFarmer;
+            showNotification('खाता सफलतापूर्वक बनाया गया! 🎉', 'success');
+            showPage('dashboard');
+            updateDashboard();
+        }
+
+        function handleAddListing(event) {
+            event.preventDefault();
+            const crop = document.getElementById('listing-crop').value;
+            const quantity = parseFloat(document.getElementById('listing-quantity').value);
+            const askingPrice = parseFloat(document.getElementById('listing-price').value);
+            const description = document.getElementById('listing-description').value;
+
+            if (!crop || !quantity || !askingPrice) {
+                showNotification('सभी फील्ड भरें', 'error');
+                return;
+            }
+
+            const newListing = {
+                id: 'MKT' + String(marketplace.length + 1).padStart(3, '0'),
+                farmerName: currentUser.name,
+                crop,
+                quantity,
+                askingPrice,
+                unit: 'kg',
+                description: description || 'Quality produce'
+            };
+
+            marketplace.push(newListing);
+            showNotification(`${crop} सूचीबद्ध किया गया! ✅`, 'success');
+            document.getElementById('listing-crop').value = '';
+            document.getElementById('listing-quantity').value = '';
+            document.getElementById('listing-price').value = '';
+            document.getElementById('listing-description').value = '';
+            showPage('marketplace');
+            updateMarketplace();
+        }
+
+        function handleFileClaim(event) {
+            event.preventDefault();
+            const crop = document.getElementById('claim-crop').value;
+            const damagePercent = parseFloat(document.getElementById('damage-range').value);
+
+            if (!crop) {
+                showNotification('फसल चुनें', 'error');
+                return;
+            }
+
+            const claimAmount = Math.round((damagePercent / 100) * 20000);
+            const newClaim = {
+                id: 'INS' + String(insuranceClaims.length + 1).padStart(3, '0'),
+                farmerId: currentUser.id,
+                crop,
+                damagePercentage: damagePercent,
+                claimAmount,
+                status: 'pending'
+            };
+
+            insuranceClaims.push(newClaim);
+            showNotification(`दावा जमा किया गया! ID: ${newClaim.id}`, 'success');
+            showPage('insurance');
+            updateInsurance();
+        }
+
+        function handleApplyKCC(event) {
+            event.preventDefault();
+            const amount = parseFloat(document.getElementById('kcc-amount').value);
+            const purpose = document.getElementById('kcc-purpose').value;
+
+            if (!amount || !purpose) {
+                showNotification('राशि और उद्देश्य दर्ज करें', 'error');
+                return;
+            }
+
+            const newLoan = {
+                id: 'LOAN' + String(loanApplications.length + 1).padStart(3, '0'),
+                farmerId: currentUser.id,
+                amount,
+                purpose,
+                status: 'approved',
+                interestRate: 4,
+                tenure: 12
+            };
+
+            loanApplications.push(newLoan);
+            const emi = Math.round((amount * (1 + 4/100)) / 12);
+            showNotification(`ऋण स्वीकृत! मासिक EMI: ₹${emi}`, 'success');
+            showPage('kcc');
+            updateKCC();
+        }
+
+        function updateDamageDisplay() {
+            const damage = document.getElementById('damage-range').value;
+            document.getElementById('damage-percent').textContent = damage;
+            document.getElementById('estimated-claim').textContent = Math.round((damage / 100) * 20000).toLocaleString();
+        }
+
+        function updateDashboard() {
+            document.getElementById('user-name').textContent = currentUser.name;
+            document.getElementById('user-village').textContent = currentUser.village;
+            document.getElementById('balance').textContent = currentUser.balance.toLocaleString();
+            document.getElementById('landsize').textContent = currentUser.landSize;
+            document.getElementById('active-listings').textContent = marketplace.length;
+
+            let html = '';
+            Object.entries(prices).forEach(([crop, data]) => {
+                html += `
+                    <div class="price-card">
+                        <h4>${crop}</h4>
+                        <div class="price-row">
+                            <span class="price-label">वर्तमान:</span>
+                            <span class="price-value">₹${data.current}</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label">7 दिन:</span>
+                            <span class="price-value">₹${data.predicted7}</span>
+                        </div>
+                        <div class="price-row">
+                            <span class="price-label">30 दिन:</span>
+                            <span class="price-value">₹${data.predicted30}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('prices-grid').innerHTML = html;
+        }
+
+        function updateMarketplace() {
+            let html = '';
+            marketplace.forEach(listing => {
+                html += `
+                    <div class="listing-card">
+                        <div class="listing-grid">
+                            <div class="listing-item">
+                                <label>फसल</label>
+                                <strong>${listing.crop}</strong>
+                            </div>
+                            <div class="listing-item">
+                                <label>मात्रा</label>
+                                <strong>${listing.quantity} ${listing.unit}</strong>
+                            </div>
+                            <div class="listing-item">
+                                <label>मूल्य</label>
+                                <strong style="color: #16a34a;">₹${listing.askingPrice}/kg</strong>
+                            </div>
+                            <div class="listing-item">
+                                <label>विक्रेता</label>
+                                <strong>${listing.farmerName}</strong>
+                            </div>
+                        </div>
+                        <p style="color: #6b7280; margin-top: 1rem; margin-bottom: 1rem;">${listing.description}</p>
+                        <button class="btn" style="width: 100%; margin-bottom: 0.5rem;">खरीद की पेशकश करें</button>
+                        <button class="btn btn-secondary" style="width: 100%;">विवरण देखें</button>
+                    </div>
+                `;
+            });
+            document.getElementById('marketplace-listings').innerHTML = html;
+        }
+
+        function updateInsurance() {
+            let html = '';
+            insuranceClaims.filter(c => c.farmerId === currentUser.id).forEach(claim => {
+                const badgeClass = claim.status === 'approved' ? 'status-approved' : 'status-pending';
+                const badgeText = claim.status === 'approved' ? 'स्वीकृत ✓' : 'लंबित ⏳';
+                
+                html += `
+                    <div class="listing-card">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                            <div>
+                                <h3>${claim.crop} - दावा</h3>
+                                <span class="status-badge ${badgeClass}">${badgeText}</span>
+                            </div>
+                        </div>
+                        <div class="listing-grid">
+                            <div class="listing-item">
+                                <label>क्षति %</label>
+                                <strong>${claim.damagePercentage}%</strong>
+                            </div>
+                            <div class="listing-item">
+                                <label>दावा राशि</label>
+                                <strong style="color: #16a34a;">₹${claim.claimAmount.toLocaleString()}</strong>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('insurance-claims').innerHTML = html;
+        }
+
+        function updateKCC() {
+            let html = '';
+            loanApplications.filter(l => l.farmerId === currentUser.id).forEach(loan => {
+                const emi = Math.round((loan.amount * (1 + loan.interestRate/100)) / loan.tenure);
+                
+                html += `
+                    <div class="listing-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3>${loan.id}</h3>
+                            <span class="status-badge status-approved">स्वीकृत ✓</span>
+                        </div>
+                        <div class="listing-grid">
+                            <div class="listing-item">
+                                <label>ऋण राशि</label>
+                                <strong>₹${loan.amount.toLocaleString()}</strong>
+                            </div>
+                            <div class="listing-item">
+                                <label>ब्याज दर</label>
+                                <strong>${loan.interestRate}%</strong>
+                            </div>
+                            <div class="listing-item">
+                                <label>अवधि</label>
+                                <strong>${loan.tenure} महीने</strong>
+                            </div>
+                            <div class="listing-item">
+                                <label>मासिक EMI</label>
+                                <strong style="color: #16a34a;">₹${emi.toLocaleString()}</strong>
+                            </div>
+                        </div>
+                        <p style="color: #6b7280; margin-top: 1rem;"><strong>उद्देश्य:</strong> ${loan.purpose}</p>
+                    </div>
+                `;
+            });
+            document.getElementById('kcc-loans').innerHTML = html;
+        }
+
+        function updateFPO() {
+            let html = '';
+            fpos.forEach(fpo => {
+                html += `
+                    <div class="fpo-card">
+                        <h3>${fpo.name}</h3>
+                        <div class="fpo-grid">
+                            <div class="fpo-item">
+                                <label>गांव</label>
+                                <strong>${fpo.village}</strong>
+                            </div>
+                            <div class="fpo-item">
+                                <label>सदस्य</label>
+                                <strong>${fpo.members.length}</strong>
+                            </div>
+                            <div class="fpo-item">
+                                <label>मुख्य फसल</label>
+                                <strong>${fpo.crop}</strong>
+                            </div>
+                            <div class="fpo-item">
+                                <label>उत्पादन</label>
+                                <strong>${fpo.totalProduction} टन</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="benefits-list">
+                        <h4>समूह का लाभ 🎯</h4>
+                        <ul>
+                            <li>बेहतर बाजार शक्ति - एक साथ अधिक मात्रा</li>
+                            <li>सरकारी योजनाओं तक सीधी पहुंच</li>
+                            <li>कम शुल्क पर बीज और खाद</li>
+                            <li>समूह के रूप में बड़े खरीदारों को बेचना</li>
+                        </ul>
+                    </div>
+                `;
+            });
+            document.getElementById('fpo-content').innerHTML = html;
+        }
+
+        function showPage(pageName) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            
+            // Show selected page
+            const page = document.getElementById(pageName + '-page');
+            if (page) page.classList.add('active');
+
+            // Update header visibility
+            document.getElementById('header').style.display = pageName === 'login' ? 'none' : 'flex';
+
+            // Update content
+            if (pageName === 'dashboard' && currentUser) updateDashboard();
+            if (pageName === 'marketplace') updateMarketplace();
+            if (pageName === 'insurance') updateInsurance();
+            if (pageName === 'kcc') updateKCC();
+            if (pageName === 'fpo') updateFPO();
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('signin-email').value = '';
+            document.getElementById('signin-password').value = '';
+            showPage('login');
+            showNotification('लॉगआउट हो गए! 👋', 'success');
+        }
+
+        // Initialize
+        showPage('login');
+    </script>
+</body>
+</html>
